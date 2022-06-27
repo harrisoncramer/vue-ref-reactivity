@@ -1,17 +1,42 @@
 import { ref, effect } from './ref'
 
-test('ref', () => {
-  const fooref = ref('foo')
-  let foo
+describe('Should work with a single ref', () => {
+  test('ref', () => {
+    const fooref = ref('foo')
+    let foo
 
-  effect(function effect_callback() {
-    /* This is triggered after every reassignment of fooref.value */
-    foo = fooref.value
+    effect(function effect_callback() {
+      /* This is triggered after every reassignment of fooref.value */
+      foo = fooref.value
+    })
+
+    expect(foo).toBe('foo')
+
+    fooref.value = 'bar'
+
+    expect(foo).toBe('bar')
   })
+})
 
-  expect(foo).toBe('foo')
+describe('Should work with multiple refs', () => {
+  test('refs', () => {
+    const refone = ref('one')
+    const reftwo = ref('two')
 
-  fooref.value = 'bar'
+    let one, two;
+    effect(function effect_callback() {
+      one = refone.value
+      two = reftwo.value
+    })
 
-  expect(foo).toBe('bar')
+    expect(one).toBe('one')
+    expect(two).toBe('two')
+
+    refone.value = 'two'
+    reftwo.value = 'three'
+
+    expect(one).toBe('two')
+    expect(two).toBe('three')
+
+  })
 })
